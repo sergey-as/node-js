@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 function app() {
-    console.clear();
+    // console.clear();
     console.log('lesson 1');
 
     // console.log('222');

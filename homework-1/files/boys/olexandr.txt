@@ -1,1 +1,0 @@
-{"name":"Olexandr","gender":"male"}

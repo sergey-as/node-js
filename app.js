@@ -1,5 +1,3 @@
-// const appL1 = require('./lesson-1/app');
-// appL1.app();
+// require('./lesson-1/app').app();
 
-const appHW1 = require('./homework-1/app');
-appHW1.app();
+require('./homework-1/app').app();
