@@ -8,8 +8,8 @@ const createFile = (dirPath, fileData) => {
             console.log(err);
         }
     });
-}
+};
 
 module.exports = {
     createFile
-}
+};

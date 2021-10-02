@@ -5,13 +5,13 @@ const processDir = (dir1, dir2, gender) => {
     fs.readdir(dir1, (err, files) => {
         if (err) {
             console.log(err);
-            return
+            return;
         }
         files.forEach(fileName => {
             fs.stat(path.join(dir1, fileName), ((err, stats) => {
                 if (err) {
                     console.log(err);
-                    return
+                    return;
                 }
 
                 if (stats.isFile()) {
@@ -35,12 +35,11 @@ const processDir = (dir1, dir2, gender) => {
                         }
                     }));
                 }
-            }))
-        })
+            }));
+        });
     });
-
-}
+};
 
 module.exports = {
     processDir
-}
+};
