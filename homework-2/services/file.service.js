@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const {promisify} = require("util");
+const {promisify} = require('util');
 
 const fileName = path.join(__dirname, '../', 'dataBase', 'users.json');
 
