@@ -1,4 +1,4 @@
-const db = require('../dataBase/users');
+let db = require('../dataBase/users');
 
 module.exports = {
     getUsers: (req, res) => {
@@ -28,7 +28,8 @@ module.exports = {
 
     deleteUser: (req, res) => {
         const {user_id} = req.params;
-        db.splice(0, db.length, ...db.filter(user => user.id !== +user_id));
+        // db.splice(0, db.length, ...db.filter(user => user.id !== +user_id));
+        db = db.filter(user => user.id !== +user_id);
         res.json(db);
     }
 }
