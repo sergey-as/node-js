@@ -5,3 +5,5 @@
 // require('./homework-1/app');
 // require('./homework-2/app');
 require('./homework-3/app');
+
+// require('./practice-3/app');

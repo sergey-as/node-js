@@ -11,12 +11,9 @@ module.exports = {
         }
     },
 
-    getUserById: async (req, res) => {
+    getUserByEmail: (req, res) => {
         try {
-            const {user_id} = req.params;
-            const user = await User.findById(user_id);
-
-            res.json({user});
+            res.json(req.user);
         } catch (e) {
             res.json(e);
         }
@@ -32,15 +29,28 @@ module.exports = {
         }
     },
 
-    updateUser: (req, res) => {
-        const {user_id} = req.params;
+    updateUser: async (req, res) => {
+        try {
+            const {email} = req.user;
 
-        res.json(`UPDATE USER with id ${user_id}`);
+            await User.updateOne(req.user, req.body);
+            const updatedUser = await User.findOne({email});
+
+            res.json(updatedUser);
+        } catch (e) {
+            res.json(e);
+        }
     },
 
-    deleteUser: (req, res) => {
-        const {user_id} = req.params;
+    deleteUser: async (req, res) => {
+        try {
+            const {email} = req.user;
 
-        res.json(`DELETE USER with id ${user_id}`);
+            await User.deleteOne(req.user);
+
+            res.json(`USER WAS DELETED (with email ${email})`);
+        } catch (e) {
+            res.json(e);
+        }
     }
 };

@@ -5,7 +5,6 @@ const userRoles = require('../configs/user-roles.enum');
 const userSchema = new Schema({
     name: {
         type: String,
-        required: false,
         trim: true
     },
     email: {
@@ -16,7 +15,6 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        unique: false,
         required: true,
         trim: true
     },

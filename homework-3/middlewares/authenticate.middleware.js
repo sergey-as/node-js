@@ -3,20 +3,17 @@ const User = require('../dataBase/User');
 module.exports = {
     authenticateMiddleware: async (req, res, next) => {
         try {
-            const userByEmail = await User.findOne({email: req.body.email});
+            const {email, password} = req.body;
+            const userByEmailAndPass = await User.findOne({email, password});
 
-            if (!userByEmail) {
+            if (!userByEmailAndPass) {
                 throw new Error('User not found!');
             }
 
-            if (req.body.password !== userByEmail.password) {
-                throw new Error('User not found!');
-            }
-
-            req.user = userByEmail;
+            req.user = userByEmailAndPass;
             next();
         } catch (e) {
             res.json(e.message);
         }
-    },
+    }
 };
