@@ -33,8 +33,7 @@ module.exports = {
         try {
             const {email} = req.user;
 
-            await User.updateOne(req.user, req.body);
-            const updatedUser = await User.findOne({email});
+            const updatedUser = await User.findOneAndUpdate({email}, req.body, {new: true});
 
             res.json(updatedUser);
         } catch (e) {
