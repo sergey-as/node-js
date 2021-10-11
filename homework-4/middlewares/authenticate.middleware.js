@@ -1,6 +1,6 @@
 const User = require('../dataBase/User');
-const authValidator = require("../validators/auth.validator");
-const passwordService = require("../service/password.service");
+const authValidator = require('../validators/auth.validator');
+const passwordService = require('../service/password.service');
 
 module.exports = {
     authenticateMiddleware: async (req, res, next) => {
@@ -25,12 +25,13 @@ module.exports = {
             res.json(e.message);
         }
     },
+
     isAuthBodyValid: (req, res, next) => {
         try {
             const {error, value} = authValidator.authValidator.validate(req.body);
 
             if (error) {
-                throw new Error(error.details[0].message);
+                throw new Error('Wrong email or password');
             }
 
             req.body = value;
@@ -38,6 +39,5 @@ module.exports = {
         } catch (e) {
             res.json(e.message);
         }
-    },
-
+    }
 };

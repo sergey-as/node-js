@@ -1,8 +1,12 @@
 const User = require('../dataBase/User');
+const userUtil = require('../util/user.util');
 
 module.exports = {
     getUsers: (req, res) => {
         try {
+            const users = req.users;
+            req.users = users.map(user => userUtil.userNormalizer(user));
+
             res.json(req.users);
         } catch (e) {
             res.json(e);
@@ -11,6 +15,9 @@ module.exports = {
 
     getUserByEmail: (req, res) => {
         try {
+            const user = req.user;
+            req.user = userUtil.userNormalizer(user);
+
             res.json(req.user);
         } catch (e) {
             res.json(e);
@@ -19,14 +26,21 @@ module.exports = {
 
     createUser: (req, res) => {
         try {
+            const user = req.user;
+            req.user = userUtil.userNormalizer(user);
+
             res.json(req.user).status(201);
         } catch (e) {
             res.json(e);
         }
     },
 
-    updateUser: (req, res) => {
+    updateUser: async (req, res) => {
         try {
+            const {email} = req.user;
+            const updatedUser = await User.findOneAndUpdate({email}, req.body, {new: true}).lean();
+            req.user = userUtil.userNormalizer(updatedUser);
+
             res.json(req.user);
         } catch (e) {
             res.json(e);

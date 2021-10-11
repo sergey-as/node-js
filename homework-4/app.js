@@ -16,5 +16,6 @@ app.use('/users', userRouter);
 app.use('/auth', authRouter);
 
 app.listen(LISTEN_CONNECTION_PORT, () => {
-    // console.log(`app listen ${PORT}`);
+    // eslint-disable-next-line no-console
+    console.log(`app listen ${LISTEN_CONNECTION_PORT}`);
 });
