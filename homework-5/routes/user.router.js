@@ -1,5 +1,7 @@
-const router = require('express').Router();
+const router = require('express')
+    .Router();
 
+const {userRoles} = require('../configs');
 const {userController} = require('../controllers');
 const {userMiddleware} = require('../middlewares');
 
@@ -33,6 +35,10 @@ router.delete(
     '/:user_email',
     userMiddleware.isUserEmailValid,
     userMiddleware.getUserByEmailMiddleware,
+    userMiddleware.checkUserRole([
+        userRoles.MANAGER,
+        userRoles.USER
+    ]),
     userController.deleteUser
 );
 

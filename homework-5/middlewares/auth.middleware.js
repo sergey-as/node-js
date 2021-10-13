@@ -1,4 +1,3 @@
-const {User} = require('../dataBase');
 const {passwordService} = require('../service');
 const {authValidator} = require('../validators');
 
@@ -10,26 +9,6 @@ module.exports = {
 
             await passwordService.compare(password, hashPassword);
 
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
-
-    isUserPresent: async (req, res, next) => {
-        try {
-            const {email} = req.body;
-            const userByEmail = await User.findOne({email}).lean();
-
-            if (!userByEmail) {
-                next({
-                    message: 'Wrong email or password',
-                    status: 404
-                });
-                return;
-            }
-
-            req.user = userByEmail;
             next();
         } catch (e) {
             next(e);

@@ -20,7 +20,7 @@ app.use('*', (err, req, res, next) => {
     res
         .status(err.status || 500)
         .json({
-            message: err.message
+            msg: err.message
         });
 });
 
@@ -34,4 +34,4 @@ app.listen(config.LISTEN_CONNECTION_PORT, () => {
 // custom err
 // .env
 // pm2
-// перевірку на ролі
+// check user role

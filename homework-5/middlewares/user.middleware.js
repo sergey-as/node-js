@@ -5,7 +5,8 @@ const {userValidator} = require('../validators');
 module.exports = {
     getUsersMiddleware: async (req, res, next) => {
         try {
-            req.users = await User.find().lean();
+            req.users = await User.find()
+                .lean();
             next();
         } catch (e) {
             next(e);
@@ -37,8 +38,9 @@ module.exports = {
 
     getUserByEmailMiddleware: async (req, res, next) => {
         try {
-            const {user_email} = req.params;
-            const userByEmail = await User.findOne({email: user_email}).lean();
+            const {user_email: email} = req.params;
+            const userByEmail = await User.findOne({email})
+                .lean();
 
             if (!userByEmail) {
                 next({
@@ -111,5 +113,44 @@ module.exports = {
         } catch (e) {
             next(e);
         }
-    }
+    },
+
+    isUserPresent: async (req, res, next) => {
+        try {
+            const {email} = req.body;
+            const userByEmail = await User.findOne({email})
+                .lean();
+
+            if (!userByEmail) {
+                next({
+                    message: 'Wrong email or password',
+                    status: 404
+                });
+                return;
+            }
+
+            req.user = userByEmail;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    checkUserRole: (roleArr = []) => (req, res, next) => {
+        try {
+            const {role} = req.user;
+
+            if (!roleArr.includes(role)) {
+                next({
+                    message: 'Access denied',
+                    status: 403
+                });
+                return;
+            }
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
 };
