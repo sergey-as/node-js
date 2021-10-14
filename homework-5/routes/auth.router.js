@@ -1,11 +1,12 @@
 const router = require('express').Router();
 
+const {dataValidate} = require('../configs');
 const {authController} = require('../controllers');
 const {authMiddleware, userMiddleware} = require('../middlewares');
 
 router.post(
     '/',
-    authMiddleware.isAuthBodyValid,
+    userMiddleware.isDataValid(dataValidate.AUTH_BODY),
     userMiddleware.isUserPresent,
     authMiddleware.isPasswordsMatched,
     authController.login

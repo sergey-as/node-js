@@ -1,7 +1,7 @@
 const router = require('express')
     .Router();
 
-const {userRoles} = require('../configs');
+const {dataValidate, userRoles} = require('../configs');
 const {userController} = require('../controllers');
 const {userMiddleware} = require('../middlewares');
 
@@ -13,27 +13,27 @@ router.get(
 
 router.post(
     '/',
-    userMiddleware.isCreateUserBodyValid,
+    userMiddleware.isDataValid(dataValidate.CREATE_USER_BODY),
     userMiddleware.createUserMiddleware,
     userController.createUser
 );
 
 router.get(
     '/:user_email',
-    userMiddleware.isUserEmailValid,
+    userMiddleware.isDataValid(dataValidate.EMAIL_PARAMS),
     userMiddleware.getUserByEmailMiddleware,
     userController.getUserByEmail
 );
 router.put(
     '/:user_email',
-    userMiddleware.isUserEmailValid,
-    userMiddleware.isUpdateUserBodyValid,
+    userMiddleware.isDataValid(dataValidate.EMAIL_PARAMS),
+    userMiddleware.isDataValid(dataValidate.UPDATE_USER_BODY),
     userMiddleware.getUserByEmailMiddleware,
     userController.updateUser
 );
 router.delete(
     '/:user_email',
-    userMiddleware.isUserEmailValid,
+    userMiddleware.isDataValid(dataValidate.EMAIL_PARAMS),
     userMiddleware.getUserByEmailMiddleware,
     userMiddleware.checkUserRole([
         userRoles.MANAGER,

@@ -1,6 +1,7 @@
+const {dataValidate, messages, statusCodes} = require('../configs');
 const {User} = require('../dataBase');
 const {passwordService} = require('../service');
-const {userValidator} = require('../validators');
+const {authValidator, userValidator} = require('../validators');
 
 module.exports = {
     getUsersMiddleware: async (req, res, next) => {
@@ -19,11 +20,10 @@ module.exports = {
             const userByEmail = await User.findOne({email});
 
             if (userByEmail) {
-                next({
-                    message: 'User already exist',
-                    status: 403
+                return next({
+                    message: messages.USER_ALREADY_EXISTS,
+                    status: statusCodes.CODE_403
                 });
-                return;
             }
 
             const hashedPassword = await passwordService.hash(password);
@@ -43,11 +43,10 @@ module.exports = {
                 .lean();
 
             if (!userByEmail) {
-                next({
-                    message: 'User not found',
-                    status: 404
+                return next({
+                    message: messages.USER_NOT_FOUND,
+                    status: statusCodes.CODE_404
                 });
-                return;
             }
 
             req.user = userByEmail;
@@ -57,58 +56,51 @@ module.exports = {
         }
     },
 
-    isUserEmailValid: (req, res, next) => {
+    isDataValid: (whichData) => (req, res, next) => {
         try {
-            const {user_email} = req.params;
-            const {error, value} = userValidator.emailUserValidator.validate({email: user_email});
+            let error;
+            let value;
 
-            if (error) {
-                next({
-                    message: error.details[0].message,
-                    status: 404
-                });
-                return;
+            if (whichData === dataValidate.EMAIL_PARAMS) {
+                const {user_email: email} = req.params;
+
+                error = userValidator.emailUserValidator.validate({email}).error;
+                value = userValidator.emailUserValidator.validate({email}).value;
+
+            } else if (whichData === dataValidate.CREATE_USER_BODY) {
+                error = userValidator.createUserValidator.validate(req.body).error;
+                value = userValidator.createUserValidator.validate(req.body).value;
+
+            } else if (whichData === dataValidate.UPDATE_USER_BODY) {
+                error = userValidator.updateUserValidator.validate(req.body).error;
+                value = userValidator.updateUserValidator.validate(req.body).value;
+
+            } else if (whichData === dataValidate.AUTH_BODY) {
+                error = authValidator.authValidator.validate(req.body).error;
+                value = authValidator.authValidator.validate(req.body).value;
             }
 
-            req.params.user_email = value.email;
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
-
-    isCreateUserBodyValid: (req, res, next) => {
-        try {
-            const {error, value} = userValidator.createUserValidator.validate(req.body);
-
             if (error) {
-                next({
-                    message: error.details[0].message,
-                    status: 404
+                let msg;
+
+                if (whichData === dataValidate.AUTH_BODY) {
+                    msg = messages.WRONG_EMAIL_OR_PASSWORD;
+                } else {
+                    msg = error.details[0].message;
+                }
+
+                return next({
+                    message: msg,
+                    status: statusCodes.CODE_404
                 });
-                return;
             }
 
-            req.body = value;
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
-
-    isUpdateUserBodyValid: (req, res, next) => {
-        try {
-            const {error, value} = userValidator.updateUserValidator.validate(req.body);
-
-            if (error) {
-                next({
-                    message: error.details[0].message,
-                    status: 404
-                });
-                return;
+            if (whichData === dataValidate.EMAIL_PARAMS) {
+                req.params.user_email = value.email;
+            } else {
+                req.body = value;
             }
 
-            req.body = value;
             next();
         } catch (e) {
             next(e);
@@ -122,11 +114,10 @@ module.exports = {
                 .lean();
 
             if (!userByEmail) {
-                next({
-                    message: 'Wrong email or password',
-                    status: 404
+                return next({
+                    message: messages.WRONG_EMAIL_OR_PASSWORD,
+                    status: statusCodes.CODE_404
                 });
-                return;
             }
 
             req.user = userByEmail;
@@ -141,11 +132,10 @@ module.exports = {
             const {role} = req.user;
 
             if (!roleArr.includes(role)) {
-                next({
-                    message: 'Access denied',
-                    status: 403
+                return next({
+                    message: messages.ACCESS_DENIED,
+                    status: statusCodes.CODE_404
                 });
-                return;
             }
 
             next();

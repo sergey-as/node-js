@@ -18,6 +18,9 @@ const updateUserValidator = Joi.object({
         .max(30)
         .trim()
         .required(),
+    role: Joi
+        .string()
+        .allow(...Object.values(userRoles)),
     email: Joi
         .forbidden(),
     password: Joi
