@@ -1,9 +1,14 @@
 const router = require('express')
     .Router();
 
-const {dataValidate, userRoles} = require('../configs');
+const {
+    constants: {BODY, EMAIL, PARAMS},
+    userRoles: {MANAGER, USER},
+    validatorsName: {CREATE_USER, EMAIL_USER, UPDATE_USER}
+} = require('../configs');
 const {userController} = require('../controllers');
 const {userMiddleware} = require('../middlewares');
+const {userValidator} = require('../validators');
 
 router.get(
     '/',
@@ -13,31 +18,31 @@ router.get(
 
 router.post(
     '/',
-    userMiddleware.isDataValid(dataValidate.CREATE_USER_BODY),
+    userMiddleware.isDataValid(userValidator, CREATE_USER, BODY),
     userMiddleware.createUserMiddleware,
     userController.createUser
 );
 
 router.get(
-    '/:user_email',
-    userMiddleware.isDataValid(dataValidate.EMAIL_PARAMS),
+    `/:${EMAIL}`,
+    userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
     userMiddleware.getUserByEmailMiddleware,
     userController.getUserByEmail
 );
 router.put(
-    '/:user_email',
-    userMiddleware.isDataValid(dataValidate.EMAIL_PARAMS),
-    userMiddleware.isDataValid(dataValidate.UPDATE_USER_BODY),
+    `/:${EMAIL}`,
+    userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
+    userMiddleware.isDataValid(userValidator, UPDATE_USER, BODY),
     userMiddleware.getUserByEmailMiddleware,
     userController.updateUser
 );
 router.delete(
-    '/:user_email',
-    userMiddleware.isDataValid(dataValidate.EMAIL_PARAMS),
+    `/:${EMAIL}`,
+    userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
     userMiddleware.getUserByEmailMiddleware,
     userMiddleware.checkUserRole([
-        userRoles.MANAGER,
-        userRoles.USER
+        MANAGER,
+        USER
     ]),
     userController.deleteUser
 );

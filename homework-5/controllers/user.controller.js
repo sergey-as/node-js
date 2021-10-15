@@ -30,7 +30,7 @@ module.exports = {
             const user = req.user;
             req.user = userUtil.userNormalizer(user);
 
-            res.json(req.user).status(statusCodes.CODE_201);
+            res.json(req.user).status(statusCodes.CREATED);
         } catch (e) {
             next(e);
         }
@@ -42,7 +42,7 @@ module.exports = {
             const updatedUser = await User.findOneAndUpdate({email}, req.body, {new: true}).lean();
             req.user = userUtil.userNormalizer(updatedUser);
 
-            res.json(req.user).status(statusCodes.CODE_201);
+            res.json(req.user).status(statusCodes.CREATED);
         } catch (e) {
             next(e);
         }
@@ -54,7 +54,7 @@ module.exports = {
 
             await User.deleteOne(req.user);
 
-            res.json(messages.USER_WAS_DELETED+` (with email ${email})`).sendStatus(statusCodes.CODE_204);
+            res.json(messages.USER_WAS_DELETED+` (with email ${email})`).sendStatus(statusCodes.NO_CONTENT);
         } catch (e) {
             next(e);
         }

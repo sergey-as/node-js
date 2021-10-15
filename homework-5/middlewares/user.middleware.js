@@ -1,7 +1,6 @@
-const {dataValidate, messages, statusCodes} = require('../configs');
+const {messages, statusCodes, validatorsName: {AUTH}} = require('../configs');
 const {User} = require('../dataBase');
 const {passwordService} = require('../service');
-const {authValidator, userValidator} = require('../validators');
 
 module.exports = {
     getUsersMiddleware: async (req, res, next) => {
@@ -22,7 +21,7 @@ module.exports = {
             if (userByEmail) {
                 return next({
                     message: messages.USER_ALREADY_EXISTS,
-                    status: statusCodes.CODE_403
+                    status: statusCodes.FORBIDDEN
                 });
             }
 
@@ -38,14 +37,14 @@ module.exports = {
 
     getUserByEmailMiddleware: async (req, res, next) => {
         try {
-            const {user_email: email} = req.params;
+            const {email: email} = req.params;
             const userByEmail = await User.findOne({email})
                 .lean();
 
             if (!userByEmail) {
                 return next({
                     message: messages.USER_NOT_FOUND,
-                    status: statusCodes.CODE_404
+                    status: statusCodes.NOT_FOUND
                 });
             }
 
@@ -56,49 +55,15 @@ module.exports = {
         }
     },
 
-    isDataValid: (whichData) => (req, res, next) => {
+    isDataValid: (validator, validatorName, validationData) => (req, res, next) => {
         try {
-            let error;
-            let value;
-
-            if (whichData === dataValidate.EMAIL_PARAMS) {
-                const {user_email: email} = req.params;
-
-                error = userValidator.emailUserValidator.validate({email}).error;
-                value = userValidator.emailUserValidator.validate({email}).value;
-
-            } else if (whichData === dataValidate.CREATE_USER_BODY) {
-                error = userValidator.createUserValidator.validate(req.body).error;
-                value = userValidator.createUserValidator.validate(req.body).value;
-
-            } else if (whichData === dataValidate.UPDATE_USER_BODY) {
-                error = userValidator.updateUserValidator.validate(req.body).error;
-                value = userValidator.updateUserValidator.validate(req.body).value;
-
-            } else if (whichData === dataValidate.AUTH_BODY) {
-                error = authValidator.authValidator.validate(req.body).error;
-                value = authValidator.authValidator.validate(req.body).value;
-            }
+            const {error} = validator[validatorName].validate(req[validationData]);
 
             if (error) {
-                let msg;
-
-                if (whichData === dataValidate.AUTH_BODY) {
-                    msg = messages.WRONG_EMAIL_OR_PASSWORD;
-                } else {
-                    msg = error.details[0].message;
-                }
-
                 return next({
-                    message: msg,
-                    status: statusCodes.CODE_404
+                    message: validatorName === AUTH ? messages.WRONG_EMAIL_OR_PASSWORD : error.details[0].message,
+                    status: statusCodes.NOT_FOUND
                 });
-            }
-
-            if (whichData === dataValidate.EMAIL_PARAMS) {
-                req.params.user_email = value.email;
-            } else {
-                req.body = value;
             }
 
             next();
@@ -116,7 +81,7 @@ module.exports = {
             if (!userByEmail) {
                 return next({
                     message: messages.WRONG_EMAIL_OR_PASSWORD,
-                    status: statusCodes.CODE_404
+                    status: statusCodes.NOT_FOUND
                 });
             }
 
@@ -134,7 +99,7 @@ module.exports = {
             if (!roleArr.includes(role)) {
                 return next({
                     message: messages.ACCESS_DENIED,
-                    status: statusCodes.CODE_404
+                    status: statusCodes.NOT_FOUND
                 });
             }
 

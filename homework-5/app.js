@@ -18,7 +18,7 @@ app.use('/users', userRouter);
 // eslint-disable-next-line no-unused-vars
 app.use('*', (err, req, res, next) => {
     res
-        .status(err.status || statusCodes.CODE_500)
+        .status(err.status || statusCodes.INTERNAL_SERVER_ERROR)
         .json({
             msg: err.message
         });
