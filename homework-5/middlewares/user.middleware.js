@@ -57,7 +57,7 @@ module.exports = {
 
     isDataValid: (validator, validatorName, validationData) => (req, res, next) => {
         try {
-            const {error} = validator[validatorName].validate(req[validationData]);
+            const {error, value} = validator[validatorName].validate(req[validationData]);
 
             if (error) {
                 return next({
@@ -66,6 +66,7 @@ module.exports = {
                 });
             }
 
+            req[validationData] = value;
             next();
         } catch (e) {
             next(e);
