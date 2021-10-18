@@ -21,7 +21,7 @@ module.exports = {
             if (userByEmail) {
                 return next({
                     message: messages.USER_ALREADY_EXISTS,
-                    status: statusCodes.FORBIDDEN
+                    status: statusCodes.FORBIDDEN_403
                 });
             }
 
@@ -44,7 +44,7 @@ module.exports = {
             if (!userByEmail) {
                 return next({
                     message: messages.USER_NOT_FOUND,
-                    status: statusCodes.NOT_FOUND
+                    status: statusCodes.NOT_FOUND_404
                 });
             }
 
@@ -62,7 +62,7 @@ module.exports = {
             if (error) {
                 return next({
                     message: validatorName === AUTH ? messages.WRONG_EMAIL_OR_PASSWORD : error.details[0].message,
-                    status: statusCodes.NOT_FOUND
+                    status: statusCodes.NOT_FOUND_404
                 });
             }
 
@@ -82,7 +82,7 @@ module.exports = {
             if (!userByEmail) {
                 return next({
                     message: messages.WRONG_EMAIL_OR_PASSWORD,
-                    status: statusCodes.NOT_FOUND
+                    status: statusCodes.NOT_FOUND_404
                 });
             }
 
@@ -100,7 +100,7 @@ module.exports = {
             if (!roleArr.includes(role)) {
                 return next({
                     message: messages.ACCESS_DENIED,
-                    status: statusCodes.NOT_FOUND
+                    status: statusCodes.NOT_FOUND_404
                 });
             }
 

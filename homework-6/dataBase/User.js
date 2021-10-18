@@ -1,6 +1,6 @@
 const {model, Schema} = require('mongoose');
 
-const {userRoles} = require('../configs');
+const {modelsName, userRoles} = require('../configs');
 
 const userSchema = new Schema({
     name: {
@@ -25,4 +25,4 @@ const userSchema = new Schema({
     }
 }, {timestamp: true});
 
-module.exports = model('user', userSchema);
+module.exports = model(modelsName.USER, userSchema);

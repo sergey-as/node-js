@@ -15,14 +15,12 @@ router.get(
     userMiddleware.getUsersMiddleware,
     userController.getUsers
 );
-
 router.post(
     '/',
     userMiddleware.isDataValid(userValidator, CREATE_USER, BODY),
     userMiddleware.createUserMiddleware,
     userController.createUser
 );
-
 router.get(
     `/:${EMAIL}`,
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),

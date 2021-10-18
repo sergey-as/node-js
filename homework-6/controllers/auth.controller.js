@@ -1,24 +1,30 @@
-const {User} = require('../dataBase');
-const {userUtil} = require('../util');
 
 module.exports = {
     login: (req, res, next) => {
         try {
-            const {user} = req;
-            const userNormalized = userUtil.userNormalizer(user);
+            const {user, access_token, refresh_token} = req;
 
-            res.json(userNormalized);
+            res.json({user, access_token, refresh_token});
         } catch (e) {
             next(e);
         }
     },
 
-    logout: async (req, res, next) => {
+    refresh: (req, res, next) => {
         try {
-            const users = await User.find().lean();
-            const usersNormalized = users.map(user => userUtil.userNormalizer(user));
+            const {user, access_token, refresh_token} = req;
 
-            res.json(usersNormalized);
+            res.json({user, access_token, refresh_token});
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    logout: (req, res, next) => {
+        try {
+            const {user} = req;
+
+            res.json({user});
         } catch (e) {
             next(e);
         }
