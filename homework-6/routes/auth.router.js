@@ -2,7 +2,8 @@ const router = require('express')
     .Router();
 
 const {
-    constants: {BODY, DELETE},
+    auth,
+    constants: {BODY},
     tokenTypes: {REFRESH_TOKEN},
     validatorsName: {AUTH}
 } = require('../configs');
@@ -14,17 +15,15 @@ router.post('/',
     userMiddleware.isDataValid(authValidator, AUTH, BODY),
     userMiddleware.isUserPresent,
     authMiddleware.isPasswordsMatched,
-    authMiddleware.generateTokenPair,
-    authController.login
+    authController.loginRefreshLogout(auth.LOGIN)
 );
 router.post('/refresh',
-    authMiddleware.checkToken(DELETE, REFRESH_TOKEN),
-    authMiddleware.generateTokenPair,
-    authController.refresh
+    authMiddleware.checkToken(REFRESH_TOKEN),
+    authController.loginRefreshLogout(auth.REFRESH)
 );
 router.post('/logout',
-    authMiddleware.checkToken(DELETE),
-    authController.logout
+    authMiddleware.checkToken(),
+    authController.loginRefreshLogout(auth.LOGOUT)
 );
 
 module.exports = router;

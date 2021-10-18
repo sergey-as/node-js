@@ -9,7 +9,7 @@ module.exports = {
         const isPasswordMatched = await bcrypt.compare(password, hashPassword);
 
         if (!isPasswordMatched) {
-            throw new ErrorHandler(messages.WRONG_EMAIL_OR_PASSWORD, statusCodes.NOT_FOUND_404);
+            throw new ErrorHandler(messages.WRONG_EMAIL_OR_PASSWORD, statusCodes.BAD_REQUEST_400);
         }
     }
 };

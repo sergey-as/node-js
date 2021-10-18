@@ -1,4 +1,4 @@
-const {statusCodes, messages} = require('../configs');
+const {statusCodes} = require('../configs');
 const {User} = require('../dataBase');
 const {userUtil} = require('../util');
 
@@ -30,7 +30,8 @@ module.exports = {
             const user = req.user;
             req.user = userUtil.userNormalizer(user);
 
-            res.json(req.user).status(statusCodes.CREATED_201);
+            res.json(req.user)
+                .status(statusCodes.CREATED_201);
         } catch (e) {
             next(e);
         }
@@ -39,10 +40,12 @@ module.exports = {
     updateUser: async (req, res, next) => {
         try {
             const {email} = req.user;
-            const updatedUser = await User.findOneAndUpdate({email}, req.body, {new: true}).lean();
+            const updatedUser = await User.findOneAndUpdate({email}, req.body, {new: true})
+                .lean();
             req.user = userUtil.userNormalizer(updatedUser);
 
-            res.json(req.user).status(statusCodes.CREATED_201);
+            res.json(req.user)
+                .status(statusCodes.CREATED_201);
         } catch (e) {
             next(e);
         }
@@ -50,11 +53,9 @@ module.exports = {
 
     deleteUser: async (req, res, next) => {
         try {
-            const {email} = req.user;
-
             await User.deleteOne(req.user);
 
-            res.json(messages.USER_WAS_DELETED+` (with email ${email})`).sendStatus(statusCodes.NO_CONTENT_204);
+            res.sendStatus(statusCodes.NO_CONTENT_204);
         } catch (e) {
             next(e);
         }

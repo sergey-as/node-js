@@ -3,7 +3,5 @@ module.exports = {
     PASSWORD_REGEXP: new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*])(?=.{8,128})/),
     AUTHORIZATION: 'Authorization',
     BODY: 'body',
-    DELETE: 'delete',
-    EMAIL: 'email',
     PARAMS: 'params',
 };

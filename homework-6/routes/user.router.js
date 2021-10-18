@@ -2,7 +2,7 @@ const router = require('express')
     .Router();
 
 const {
-    constants: {BODY, EMAIL, PARAMS},
+    constants: {BODY, PARAMS},
     userRoles,
     validatorsName: {CREATE_USER, EMAIL_USER, UPDATE_USER}
 } = require('../configs');
@@ -22,7 +22,7 @@ router.post(
     userController.createUser
 );
 router.get(
-    `/:${EMAIL}`,
+    '/:email',
     authMiddleware.checkToken(),
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
     authMiddleware.checkAccessByEmail,
@@ -30,7 +30,7 @@ router.get(
     userController.getUserByEmail
 );
 router.put(
-    `/:${EMAIL}`,
+    '/:email',
     authMiddleware.checkToken(),
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
     authMiddleware.checkAccessByEmail,
@@ -39,7 +39,7 @@ router.put(
     userController.updateUser
 );
 router.delete(
-    `/:${EMAIL}`,
+    '/:email',
     authMiddleware.checkToken(),
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
     authMiddleware.checkAccessByEmail,

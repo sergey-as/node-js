@@ -1,4 +1,5 @@
 module.exports = {
+    auth: require('./auth.enum'),
     config: require('./config'),
     constants: require('./constants'),
     dataValidate: require('./data.validate.enum'),
