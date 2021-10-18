@@ -76,4 +76,23 @@ module.exports = {
             next(e);
         }
     },
+
+    checkAccessByEmail: (req, res, next) => {
+        try {
+            const {email: authEmail} = req.user;
+            const {email: checkEmail} = req.params;
+
+            if (authEmail !== checkEmail) {
+                return next({
+                    message: messages.WRONG_EMAIL_OR_PASSWORD,
+                    status: statusCodes.FORBIDDEN_403
+                });
+            }
+
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
 };
