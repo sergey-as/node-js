@@ -37,7 +37,7 @@ module.exports = {
 
     getUserByEmailMiddleware: async (req, res, next) => {
         try {
-            const {email: email} = req.params;
+            const {email} = req.params;
             const userByEmail = await User.findOne({email})
                 .lean();
 

@@ -1,13 +1,15 @@
 const {statusCodes} = require('../configs');
 const {User} = require('../dataBase');
 const {userUtil} = require('../util');
+const {passwordService} = require('../service');
 
 module.exports = {
-    getUsers: (req, res, next) => {
+    getUsers: async (req, res, next) => {
         try {
-            const users = req.users;
-            req.users = users.map(user => userUtil.userNormalizer(user));
+            const users = await User.find()
+                .lean();
 
+            req.users = users.map(user => userUtil.userNormalizer(user));
             res.json(req.users);
         } catch (e) {
             next(e);
@@ -25,10 +27,13 @@ module.exports = {
         }
     },
 
-    createUser: (req, res, next) => {
+    createUser: async (req, res, next) => {
         try {
-            const user = req.user;
-            req.user = userUtil.userNormalizer(user);
+            const {password} = req.body;
+            const hashedPassword = await passwordService.hash(password);
+
+            const createdUser = await User.create({...req.body, password: hashedPassword});
+            req.user = userUtil.userNormalizer(createdUser.toObject());
 
             res.json(req.user)
                 .status(statusCodes.CREATED_201);

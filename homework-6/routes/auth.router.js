@@ -13,7 +13,7 @@ const {authValidator} = require('../validators');
 
 router.post('/',
     userMiddleware.isDataValid(authValidator, AUTH, BODY),
-    userMiddleware.isUserPresent,
+    userMiddleware.isUserPresent(BODY,true),
     authMiddleware.isPasswordsMatched,
     authController.loginRefreshLogout(auth.LOGIN)
 );

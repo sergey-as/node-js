@@ -1,22 +1,37 @@
-const {messages, statusCodes, validatorsName: {AUTH}} = require('../configs');
+const {
+    constants: {PARAMS},
+    messages,
+    statusCodes,
+    validatorsName: {AUTH}
+} = require('../configs');
 const {User} = require('../dataBase');
-const {passwordService} = require('../service');
 
 module.exports = {
-    getUsersMiddleware: async (req, res, next) => {
+    isUserPresent: (body_params = PARAMS, auth = false) => async (req, res, next) => {
         try {
-            req.users = await User.find()
+            const {email} = req[body_params];
+            const userByEmail = await User.findOne({email})
                 .lean();
+
+            if (!userByEmail) {
+                return next({
+                    message: auth ? messages.WRONG_EMAIL_OR_PASSWORD : messages.USER_NOT_FOUND,
+                    status: auth ? statusCodes.BAD_REQUEST_400 : statusCodes.NOT_FOUND_404
+                });
+            }
+
+            req.user = userByEmail;
             next();
         } catch (e) {
             next(e);
         }
     },
 
-    createUserMiddleware: async (req, res, next) => {
+    isUserNotPresent: async (req, res, next) => {
         try {
-            const {email, password} = req.body;
-            const userByEmail = await User.findOne({email});
+            const {email} = req.body;
+            const userByEmail = await User.findOne({email})
+                .lean();
 
             if (userByEmail) {
                 return next({
@@ -25,30 +40,6 @@ module.exports = {
                 });
             }
 
-            const hashedPassword = await passwordService.hash(password);
-            const createdUser = await User.create({...req.body, password: hashedPassword});
-
-            req.user = createdUser.toObject();
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
-
-    getUserByEmailMiddleware: async (req, res, next) => {
-        try {
-            const {email: email} = req.params;
-            const userByEmail = await User.findOne({email})
-                .lean();
-
-            if (!userByEmail) {
-                return next({
-                    message: messages.USER_NOT_FOUND,
-                    status: statusCodes.NOT_FOUND_404
-                });
-            }
-
-            req.user = userByEmail;
             next();
         } catch (e) {
             next(e);
@@ -67,26 +58,6 @@ module.exports = {
             }
 
             req[validationData] = value;
-            next();
-        } catch (e) {
-            next(e);
-        }
-    },
-
-    isUserPresent: async (req, res, next) => {
-        try {
-            const {email} = req.body;
-            const userByEmail = await User.findOne({email})
-                .lean();
-
-            if (!userByEmail) {
-                return next({
-                    message: messages.WRONG_EMAIL_OR_PASSWORD,
-                    status: statusCodes.BAD_REQUEST_400
-                });
-            }
-
-            req.user = userByEmail;
             next();
         } catch (e) {
             next(e);

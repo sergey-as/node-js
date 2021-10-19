@@ -12,13 +12,12 @@ const {userValidator} = require('../validators');
 
 router.get(
     '/',
-    userMiddleware.getUsersMiddleware,
     userController.getUsers
 );
 router.post(
     '/',
     userMiddleware.isDataValid(userValidator, CREATE_USER, BODY),
-    userMiddleware.createUserMiddleware,
+    userMiddleware.isUserNotPresent,
     userController.createUser
 );
 router.get(
@@ -26,7 +25,7 @@ router.get(
     authMiddleware.checkToken(),
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
     authMiddleware.checkAccessByEmail,
-    userMiddleware.getUserByEmailMiddleware,
+    userMiddleware.isUserPresent(),
     userController.getUserByEmail
 );
 router.put(
@@ -35,7 +34,7 @@ router.put(
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
     authMiddleware.checkAccessByEmail,
     userMiddleware.isDataValid(userValidator, UPDATE_USER, BODY),
-    userMiddleware.getUserByEmailMiddleware,
+    userMiddleware.isUserPresent(),
     userController.updateUser
 );
 router.delete(
@@ -43,7 +42,7 @@ router.delete(
     authMiddleware.checkToken(),
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
     authMiddleware.checkAccessByEmail,
-    userMiddleware.getUserByEmailMiddleware,
+    userMiddleware.isUserPresent(),
     userMiddleware.checkUserRole([
         userRoles.ADMIN,
         userRoles.MANAGER,
