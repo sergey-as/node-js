@@ -1,5 +1,5 @@
 const {statusCodes} = require('../configs');
-const {User} = require('../dataBase');
+const {User, O_Auth} = require('../dataBase');
 const {userUtil} = require('../util');
 const {passwordService} = require('../service');
 
@@ -58,6 +58,7 @@ module.exports = {
 
     deleteUser: async (req, res, next) => {
         try {
+            await O_Auth.deleteMany({user_id: req.user._id});
             await User.deleteOne(req.user);
 
             res.sendStatus(statusCodes.NO_CONTENT_204);

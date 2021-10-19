@@ -22,27 +22,23 @@ router.post(
 );
 router.get(
     '/:email',
-    authMiddleware.checkToken(),
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
-    authMiddleware.checkAccessByEmail,
     userMiddleware.isUserPresent(),
     userController.getUserByEmail
 );
 router.put(
     '/:email',
-    authMiddleware.checkToken(),
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
-    authMiddleware.checkAccessByEmail,
     userMiddleware.isDataValid(userValidator, UPDATE_USER, BODY),
-    userMiddleware.isUserPresent(),
+    authMiddleware.checkToken(),
+    authMiddleware.checkAccessByEmail,
     userController.updateUser
 );
 router.delete(
     '/:email',
-    authMiddleware.checkToken(),
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
+    authMiddleware.checkToken(),
     authMiddleware.checkAccessByEmail,
-    userMiddleware.isUserPresent(),
     userMiddleware.checkUserRole([
         userRoles.ADMIN,
         userRoles.MANAGER,

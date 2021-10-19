@@ -1,35 +1,58 @@
-const {auth, constants, tokenTypes} = require('../configs');
+const {constants, tokenTypes} = require('../configs');
 const {O_Auth} = require('../dataBase');
 const {jwtService} = require('../service');
 const {userUtil} = require('../util');
 
 module.exports = {
-    loginRefreshLogout: (authType) => async (req, res, next) => {
+    login: async (req, res, next) => {
         try {
-            if (authType !== auth.LOGIN) {
-                const token = req.get(constants.AUTHORIZATION);
-                const tokenType = authType === auth.REFRESH ? tokenTypes.REFRESH_TOKEN : tokenTypes.ACCESS_TOKEN;
+            const {user} = req;
 
-                await O_Auth.deleteOne({[tokenType]: token});
-            }
+            const tokenPair = jwtService.generateTokenPair();
 
+            await O_Auth.create({
+                ...tokenPair,
+                user_id: user._id
+            });
+
+            const userNormalized = userUtil.userNormalizer(user);
+
+            res.json({user: userNormalized, ...tokenPair});
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    refresh: async (req, res, next) => {
+        try {
+            const token = req.get(constants.AUTHORIZATION);
+            const {user} = req;
+
+            await O_Auth.deleteOne({[tokenTypes.REFRESH_TOKEN]: token});
+
+            const tokenPair = jwtService.generateTokenPair();
+
+            await O_Auth.create({
+                ...tokenPair,
+                user_id: user._id
+            });
+
+            const userNormalized = userUtil.userNormalizer(user);
+
+            res.json({user: userNormalized, ...tokenPair});
+        } catch (e) {
+            next(e);
+        }
+    },
+    logout: async (req, res, next) => {
+        try {
+            const token = req.get(constants.AUTHORIZATION);
             const {user} = req;
             const userNormalized = userUtil.userNormalizer(user);
 
-            let resp = {user: userNormalized};
+            await O_Auth.deleteOne({[tokenTypes.ACCESS_TOKEN]: token});
 
-            if (authType !== auth.LOGOUT) {
-                const tokenPair = jwtService.generateTokenPair();
-
-                await O_Auth.create({
-                    ...tokenPair,
-                    user_id: userNormalized._id
-                });
-
-                resp = {...resp, ...tokenPair};
-            }
-
-            res.json(resp);
+            res.json({user: userNormalized});
         } catch (e) {
             next(e);
         }

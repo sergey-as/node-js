@@ -2,7 +2,6 @@ const router = require('express')
     .Router();
 
 const {
-    auth,
     constants: {BODY},
     tokenTypes: {REFRESH_TOKEN},
     validatorsName: {AUTH}
@@ -13,17 +12,17 @@ const {authValidator} = require('../validators');
 
 router.post('/',
     userMiddleware.isDataValid(authValidator, AUTH, BODY),
-    userMiddleware.isUserPresent(BODY,true),
+    userMiddleware.isUserPresent(BODY, true),
     authMiddleware.isPasswordsMatched,
-    authController.loginRefreshLogout(auth.LOGIN)
+    authController.login
 );
 router.post('/refresh',
     authMiddleware.checkToken(REFRESH_TOKEN),
-    authController.loginRefreshLogout(auth.REFRESH)
+    authController.refresh
 );
 router.post('/logout',
     authMiddleware.checkToken(),
-    authController.loginRefreshLogout(auth.LOGOUT)
+    authController.logout
 );
 
 module.exports = router;
