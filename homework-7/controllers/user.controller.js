@@ -29,12 +29,13 @@ module.exports = {
 
     createUser: async (req, res, next) => {
         try {
-            const {password} = req.body;
+            const {email, name: userName, password} = req.body;
             const hashedPassword = await passwordService.hash(password);
 
-            await emailService.sendMail(req.body.email, emailActions.WELCOME, {userName: req.body.name});
-
             const createdUser = await User.create({...req.body, password: hashedPassword});
+
+            await emailService.sendMail(email, emailActions.REGISTERED, {userName, userEmail: email});
+
             req.user = userUtil.userNormalizer(createdUser.toObject());
 
             res.status(statusCodes.CREATED_201)
@@ -46,10 +47,14 @@ module.exports = {
 
     updateUser: async (req, res, next) => {
         try {
-            const {email} = req.user;
+            const {email, name: oldName} = req.user;
             const updatedUser = await User.findOneAndUpdate({email}, req.body, {new: true})
                 .lean();
+
             req.user = userUtil.userNormalizer(updatedUser);
+            const {name: userName} = req.user;
+
+            await emailService.sendMail(email, emailActions.UPDATED, {userName, oldName});
 
             res.json(req.user)
                 .status(statusCodes.CREATED_201);
@@ -60,8 +65,12 @@ module.exports = {
 
     deleteUser: async (req, res, next) => {
         try {
+            const {email, name: userName} = req.user;
+
             await O_Auth.deleteMany({user_id: req.user._id});
             await User.deleteOne(req.user);
+
+            await emailService.sendMail(email, emailActions.REMOVED, {userName, userEmail: email});
 
             res.sendStatus(statusCodes.NO_CONTENT_204);
         } catch (e) {

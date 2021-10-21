@@ -5,4 +5,5 @@ module.exports = {
     USER_NOT_FOUND: 'User not found',
     USER_WAS_DELETED: 'User was deleted',
     WRONG_EMAIL_OR_PASSWORD: 'Wrong email or password',
+    WRONG_TEMPLATE_NAME: 'Wrong template name',
 };

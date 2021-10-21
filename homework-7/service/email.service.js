@@ -2,13 +2,18 @@ const EmailTemplates = require('email-templates');
 const nodemailer = require('nodemailer');
 const path = require('path');
 
-const {config: {NO_REPLY_EMAIL_USER, NO_REPLY_EMAIL_PASS}} = require('../configs');
-const allTemplates = require('../email-templates');
+const {
+    config: {NO_REPLY_EMAIL_USER, NO_REPLY_EMAIL_PASS},
+    messages,
+    statusCodes
+} = require('../configs');
+const emailTemplates = require('../email.templates');
+const {ErrorHandler} = require('../errors');
 
 const templateParser = new EmailTemplates({
     views: {
-        // root: path.join(process.cwd(), 'email-templates')
-        root: path.join(__dirname, '..', 'email-templates')
+        // root: path.join(process.cwd(), 'email.templates')
+        root: path.join(__dirname, '..', 'email.templates')
     }
 });
 
@@ -24,20 +29,20 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendMail = async (userMail, emailAction, context = {}) => {
-    const templateInfo = allTemplates[emailAction];
+const sendMail = async (userEmail, emailAction, context = {}) => {
+    const templateInfo = emailTemplates[emailAction];
 
     if (!templateInfo) {
-        throw new Error('Wrong template name');
+        throw new ErrorHandler(messages.WRONG_TEMPLATE_NAME, statusCodes.INTERNAL_SERVER_ERROR_500);
     }
 
-    const html = await templateParser.render(templateInfo.templateName, context);
+    const contentHtml = await templateParser.render(templateInfo.templateName, context);
 
     return transporter.sendMail({
         from: NO_REPLY_EMAIL_USER,
-        to: userMail,
+        to: userEmail,
         subject: templateInfo.subject,
-        html
+        html: contentHtml
     });
 };
 

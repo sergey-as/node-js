@@ -1,5 +1,6 @@
 module.exports = {
-    WELCOME: 'welcome',
-    USER_BLOCKED: 'userBlocked',
-    ORDER_CONFIRMED: 'orderConfirmed',
+    AUTHORIZED: 'authorized',
+    REGISTERED: 'registered',
+    REMOVED: 'removed',
+    UPDATED: 'updated',
 };

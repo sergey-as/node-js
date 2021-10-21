@@ -1,6 +1,6 @@
-const {constants, tokenTypes} = require('../configs');
+const {constants, tokenTypes, emailActions} = require('../configs');
 const {O_Auth} = require('../dataBase');
-const {jwtService} = require('../service');
+const {jwtService, emailService} = require('../service');
 const {userUtil} = require('../util');
 
 module.exports = {
@@ -16,6 +16,9 @@ module.exports = {
             });
 
             const userNormalized = userUtil.userNormalizer(user);
+
+            const {email, name: userName} = userNormalized;
+            await emailService.sendMail(email, emailActions.AUTHORIZED, {userName});
 
             res.json({user: userNormalized, ...tokenPair});
         } catch (e) {
