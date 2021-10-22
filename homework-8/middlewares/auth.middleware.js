@@ -22,16 +22,13 @@ module.exports = {
             await jwtService.verifyToken(token, tokenType);
 
             const tokenResponse = await O_Auth
-                .findOne({[tokenType]: token})
-                .populate('user_id');
+                .findOne({[tokenType]: token});
 
             if (!tokenResponse) {
                 return next(errInvalidToken);
             }
 
-            const user = tokenResponse.user_id;
-
-            req.user = user.normalize();
+            req.user = tokenResponse.user_id;
             next();
         } catch (e) {
             next(e);
