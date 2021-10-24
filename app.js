@@ -15,6 +15,7 @@
 // require('./homework-5/app');
 // require('./homework-6/app');
 // require('./homework-7/app');
-require('./homework-8/app');
+// require('./homework-8/app');
+require('./homework-9/app');
 
 // require('./practice-3/app');
