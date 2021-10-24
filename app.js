@@ -6,6 +6,7 @@
 // require('./lesson-6/app');
 // require('./lesson-7/app');
 // require('./lesson-8/app');
+// require('./lesson-9/app');
 
 // require('./homework-1/app');
 // require('./homework-2/app');

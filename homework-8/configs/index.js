@@ -1,4 +1,5 @@
 module.exports = {
+    actionTokenTypes: require('./action.token.types.enum'),
     auth: require('./auth.enum'),
     config: require('./config'),
     constants: require('./constants'),

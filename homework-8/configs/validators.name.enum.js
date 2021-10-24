@@ -1,6 +1,7 @@
 module.exports = {
-    EMAIL_USER: 'emailUserValidator',
-    CREATE_USER: 'createUserValidator',
-    UPDATE_USER: 'updateUserValidator',
     AUTH: 'authValidator',
+    CREATE_USER: 'createUserValidator',
+    EMAIL_USER: 'emailUserValidator',
+    PASSWORD_USER: 'passwordUserValidator',
+    UPDATE_USER: 'updateUserValidator',
 };

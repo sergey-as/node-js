@@ -1,10 +1,11 @@
 const {
+    actionTokenTypes: {FORGOT_PASSWORD},
     constants: {AUTHORIZATION},
     messages,
     statusCodes,
     tokenTypes: {ACCESS_TOKEN},
 } = require('../configs');
-const {O_Auth} = require('../dataBase');
+const {ActionToken, O_Auth} = require('../dataBase');
 const {jwtService} = require('../service');
 
 module.exports = {
@@ -23,6 +24,32 @@ module.exports = {
 
             const tokenResponse = await O_Auth
                 .findOne({[tokenType]: token});
+
+            if (!tokenResponse) {
+                return next(errInvalidToken);
+            }
+
+            req.user = tokenResponse.user_id;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    checkActionToken: (actionTokenType = FORGOT_PASSWORD) => async (req, res, next) => {
+        try {
+            const token = req.get(AUTHORIZATION);
+
+            const errInvalidToken = {message: messages.INVALID_TOKEN, status: statusCodes.UNAUTHORIZED_401};
+
+            if (!token) {
+                return next(errInvalidToken);
+            }
+
+            await jwtService.verifyActionToken(token, actionTokenType);
+
+            const tokenResponse = await ActionToken
+                .findOne({[actionTokenType]: token});
 
             if (!tokenResponse) {
                 return next(errInvalidToken);

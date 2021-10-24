@@ -6,4 +6,5 @@ module.exports = {
     USER_WAS_DELETED: 'User was deleted',
     WRONG_EMAIL_OR_PASSWORD: 'Wrong email or password',
     WRONG_TEMPLATE_NAME: 'Wrong template name',
+    WRONG_TOKEN_TYPE: 'Wrong token type',
 };

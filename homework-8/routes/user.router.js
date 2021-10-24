@@ -3,8 +3,9 @@ const router = require('express')
 
 const {
     constants: {BODY, PARAMS},
+    tokenTypes,
     userRoles,
-    validatorsName: {CREATE_USER, EMAIL_USER, UPDATE_USER}
+    validatorsName: {CREATE_USER, EMAIL_USER, UPDATE_USER},
 } = require('../configs');
 const {userController} = require('../controllers');
 const {userMiddleware, authMiddleware} = require('../middlewares');
@@ -30,14 +31,14 @@ router.put(
     '/:email',
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
     userMiddleware.isDataValid(userValidator, UPDATE_USER, BODY),
-    authMiddleware.checkToken(),
+    authMiddleware.checkToken(tokenTypes.ACCESS_TOKEN),
     authMiddleware.checkAccessByEmail,
     userController.updateUser
 );
 router.delete(
     '/:email',
     userMiddleware.isDataValid(userValidator, EMAIL_USER, PARAMS),
-    authMiddleware.checkToken(),
+    authMiddleware.checkToken(tokenTypes.ACCESS_TOKEN),
     authMiddleware.checkAccessByEmail,
     userMiddleware.checkUserRole([
         userRoles.ADMIN,
