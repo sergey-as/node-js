@@ -48,8 +48,7 @@ module.exports = {
 
             await jwtService.verifyActionToken(token, actionTokenType);
 
-            const tokenResponse = await ActionToken
-                .findOne({[actionTokenType]: token});
+            const tokenResponse = await ActionToken.findOne({token});
 
             if (!tokenResponse) {
                 return next(errInvalidToken);
