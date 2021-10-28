@@ -7,7 +7,7 @@
 // require('./lesson-7/app');
 // require('./lesson-8/app');
 // require('./lesson-9/app');
-require('./lesson-10/app');
+// require('./lesson-10/app');
 
 // require('./homework-1/app');
 // require('./homework-2/app');
@@ -18,5 +18,6 @@ require('./lesson-10/app');
 // require('./homework-7/app');
 // require('./homework-8/app');
 // require('./homework-9/app');
+require('./homework-10/app');
 
 // require('./practice-3/app');
