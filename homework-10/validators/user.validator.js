@@ -1,64 +1,52 @@
 const Joi = require('joi');
 
-const {constants, userRoles} = require('../configs');
+const {
+    order,
+    userFields,
+} = require('../configs');
+const commonValidators = require('./common.validators');
 
 const createUserValidator = Joi.object({
-    name: Joi
-        .string()
-        .alphanum()
-        .min(2)
-        .max(30)
-        .trim()
-        .required(),
-    email: Joi
-        .string()
-        .regex(constants.EMAIL_REGEXP)
-        .trim()
-        .required(),
-    role: Joi
-        .string()
-        .allow(...Object.values(userRoles)),
-    password: Joi
-        .string()
-        .regex(constants.PASSWORD_REGEXP)
-        .required(),
+    name: commonValidators.nameValidator.required(),
+    email: commonValidators.emailValidator,
+    password: commonValidators.passwordValidator,
+    role: commonValidators.roleValidator
 });
 
 const emailUserValidator = Joi.object({
-    email: Joi
+    email: commonValidators.emailValidator
+});
+
+const getUsersValidator = Joi.object({
+    name: commonValidators.nameFilterValidator,
+    role: commonValidators.roleValidator,
+    perPage: Joi
+        .number(),
+    page: Joi
+        .number(),
+    sortBy: Joi
         .string()
-        .regex(constants.EMAIL_REGEXP)
-        .trim()
-        .required(),
+        .valid(...Object.values(userFields)),
+    order: Joi
+        .string()
+        .valid(...Object.values(order))
 });
 
 const passwordUserValidator = Joi.object({
-    password: Joi
-        .string()
-        .regex(constants.PASSWORD_REGEXP)
-        .required(),
+    password: commonValidators.passwordValidator
 });
 
 const updateUserValidator = Joi.object({
-    name: Joi
-        .string()
-        .alphanum()
-        .min(2)
-        .max(30)
-        .trim()
-        .required(),
-    role: Joi
-        .string()
-        .allow(...Object.values(userRoles)),
-    email: Joi
-        .forbidden(),
-    password: Joi
-        .forbidden(),
+    name: commonValidators.nameValidator,
+    email: Joi.forbidden(),
+    password: Joi.forbidden(),
+    role: commonValidators.roleValidator,
 });
 
 module.exports = {
     createUserValidator,
     emailUserValidator,
+    getUsersValidator,
     passwordUserValidator,
     updateUserValidator
 };

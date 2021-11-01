@@ -1,5 +1,5 @@
 const {
-    constants: {PARAMS},
+    dataIn: {PARAMS},
     messages,
     statusCodes,
     validatorsName: {AUTH}

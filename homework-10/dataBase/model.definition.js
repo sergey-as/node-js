@@ -1,14 +1,15 @@
+const {userRoles} = require('../configs');
+
 module.exports = {
-    gentelmenClub: {
+    schemaOptions: {
         timestamps: true,
         toObject: {virtuals: true},
         toJSON: {virtuals: true}
     },
 
-    NEP: {
+    nameEmailPassRole: {
         name: {
             type: String,
-            required: true,
             trim: true
         },
         email: {
@@ -20,8 +21,12 @@ module.exports = {
         password: {
             type: String,
             required: true,
-            trim: true,
-            // select: false
+            trim: true
         },
+        role: {
+            type: String,
+            default: userRoles.USER,
+            enum: Object.values(userRoles)
+        }
     }
 };

@@ -3,6 +3,7 @@ const express = require('express');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
+const swaggerUI = require('swagger-ui-express');
 require('dotenv')
     .config();
 
@@ -11,6 +12,7 @@ const startCron = require('./cron');
 const {ErrorHandler} = require('./errors');
 const {defaultData} = require('./util');
 const {authRouter, userRouter} = require('./routes');
+const {swaggerDocument} = require('./docs');
 
 const app = express();
 
@@ -32,6 +34,7 @@ if (config.NODE_ENV === 'dev') {
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
 
@@ -65,4 +68,5 @@ function _configureCors(origin, callback) {
 }
 
 // HW-10:
-//
+// swagger
+// querybuilder

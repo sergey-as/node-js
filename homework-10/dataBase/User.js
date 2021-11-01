@@ -1,30 +1,13 @@
 const {model, Schema} = require('mongoose');
 
-const {modelsName, userRoles} = require('../configs');
-const {passwordService} = require('../service');
+const {modelsName} = require('../configs');
+const modelDefinition = require('./model.definition');
+// const {passwordService} = require('../service'); //for fixing circular dependence
+const passwordService = require('../service/password.service'); //for fixing circular dependence
 
 const userSchema = new Schema({
-    name: {
-        type: String,
-        trim: true
-    },
-    email: {
-        type: String,
-        unique: true,
-        required: true,
-        trim: true
-    },
-    password: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    role: {
-        type: String,
-        default: userRoles.USER,
-        enum: Object.values(userRoles)
-    }
-}, {timestamps: true, toObject: {virtuals: true}, toJSON: {virtuals: true}});
+    ...modelDefinition.nameEmailPassRole
+}, modelDefinition.schemaOptions);
 
 userSchema.methods = {
     isPasswordsMatched(password) {
@@ -43,7 +26,7 @@ userSchema.methods = {
         });
 
         return userToNormalize;
-    },
+    }
 };
 
 userSchema.statics = {

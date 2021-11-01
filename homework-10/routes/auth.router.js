@@ -3,7 +3,7 @@ const router = require('express')
 
 const {
     actionTokenTypes,
-    constants: {BODY},
+    dataIn: {BODY},
     tokenTypes,
     validatorsName: {AUTH, EMAIL_USER}
 } = require('../configs');

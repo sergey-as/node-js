@@ -1,6 +1,7 @@
 const {Schema, model} = require('mongoose');
 
 const {modelsName} = require('../configs');
+const modelDefinition = require('./model.definition');
 
 const oAuthSchema = new Schema({
     access_token: {
@@ -17,9 +18,8 @@ const oAuthSchema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
         ref: modelsName.USER
-    },
-
-}, {timestamps: true, toObject: {virtuals: true}, toJSON: {virtuals: true}});
+    }
+}, modelDefinition.schemaOptions);
 
 oAuthSchema.pre('findOne', function() {
     this.populate('user_id');
