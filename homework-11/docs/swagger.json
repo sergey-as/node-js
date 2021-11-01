@@ -1,0 +1,561 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "node-js",
+    "description": "This is my Hello-world-project",
+    "contact": {
+      "name": "Serhii",
+      "url": "https://github.com/sergey-as/node-js",
+      "email": "serhii@gml.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Operations about authentication"
+    },
+    {
+      "name": "users",
+      "description": "Operations about users"
+    }
+  ],
+  "paths": {
+    "/auth": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login user",
+        "description": "",
+        "operationId": "login",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "default": "jon@asd.com",
+            "required": true,
+            "type": "string",
+            "uniqueItems": true
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "default": "Asdfqwe1!",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/userWithTokenPair"
+            }
+          },
+          "400": {
+            "description": "Wrong email or password"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Logout user",
+        "description": "",
+        "operationId": "logout",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Ths is `access_token` from POST /auth endpoint",
+            "default": "",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/user"
+            }
+          },
+          "401": {
+            "description": "INVALID_TOKEN"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Refresh token",
+        "description": "",
+        "operationId": "refresh",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Ths is `refresh_token` from POST /auth endpoint",
+            "default": "",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/userWithTokenPair"
+            }
+          },
+          "401": {
+            "description": "INVALID_TOKEN"
+          }
+        }
+      }
+    },
+    "/auth/password/change": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Change password",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "setNewPassword",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Ths is `access_token` from POST /auth endpoint",
+            "default": "",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "Ths is `new password` to set",
+            "default": "Asdfqwe1!",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/user"
+            }
+          },
+          "401": {
+            "description": "INVALID_TOKEN"
+          }
+        }
+      }
+    },
+    "/auth/password/forgot": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Sending mail Forgot password",
+        "description": "Sending mail Forgot password",
+        "operationId": "sendMailForgotPassword",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "default": "jon@asd.com",
+            "required": true,
+            "type": "string",
+            "uniqueItems": true
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "default": "Asdfqwe1!",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Set new password after sending mail Forgot password",
+        "description": "Set new password after sending mail Forgot password",
+        "operationId": "setNewPasswordAfterForgot",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Ths is `actionToken__forgot_password` from POST /auth/password/forgot endpoint",
+            "default": "",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "Ths is `new password` to set",
+            "default": "Asdfqwe1!",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "401": {
+            "description": "INVALID_TOKEN"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get many users",
+        "description": "Get many users by some filters",
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Ths is `access_token` from POST /auth endpoint",
+            "default": "",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "default": 1,
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "default": 10,
+            "required": false,
+            "type": "number"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "User's field name",
+            "default": "createdAt",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "asc or desc",
+            "default": "asc",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "One or more usernames or the first parts of usernames, separated by semicolons",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "One or more roles, separated by semicolons",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/user"
+              }
+            }
+          },
+          "400": {
+            "description": "Just an error",
+            "schema": {
+              "$ref": "#/definitions/commonError"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Creates user",
+        "description": "This is how to create user",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "name",
+            "default": "Jordan",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "email",
+            "default": "jon@asd.com",
+            "required": true,
+            "type": "string",
+            "uniqueItems": true
+          },
+          {
+            "in": "formData",
+            "name": "password",
+            "default": "Asdfqwe1!",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "role",
+            "default": "user",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User was created",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/user"
+            }
+          },
+          "400": {
+            "description": "Just an error",
+            "schema": {
+              "$ref": "#/definitions/commonError"
+            }
+          }
+        }
+      }
+    },
+    "/users/{email}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get user by email",
+        "description": "",
+        "operationId": "getUserByEmail",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Ths is `access_token` from POST /auth endpoint",
+            "default": "",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "path",
+            "description": "The `email` that needs to be fetched.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/user"
+            }
+          },
+          "400": {
+            "description": "Invalid email supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Updated user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Ths is `access_token` from POST /auth endpoint",
+            "default": "",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "path",
+            "description": "The `email` that needs to be fetched.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "description": "`name` that need to be updated",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated user object\"",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/user"
+            }
+          },
+          "400": {
+            "description": "Invalid email supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Delete user",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Ths is `access_token` from POST /auth endpoint",
+            "default": "",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "path",
+            "description": "The `email` that needs to be fetched.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid email supplied"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "617f00cccb53c488f1ad00c4",
+          "description": "MongoDB ID"
+        },
+        "name": {
+          "type": "string",
+          "example": "Jordan"
+        },
+        "email": {
+          "type": "string",
+          "example": "asd@asd.com"
+        },
+        "role": {
+          "type": "string",
+          "example": "admin"
+        }
+      }
+    },
+    "userWithTokenPair": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "example": "617f00cccb53c488f1ad00c4",
+          "description": "MongoDB ID"
+        },
+        "name": {
+          "type": "string",
+          "example": "Jordan"
+        },
+        "email": {
+          "type": "string",
+          "example": "asd@asd.com"
+        },
+        "role": {
+          "type": "string",
+          "example": "admin"
+        },
+        "access_token": {
+          "type": "string",
+          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MzU3MjIyNDksImV4cCI6MTYzNTcyMzE0OX0.9uC55GciEoVhwMRUwjmGxe061LzFQ5iP4HuribwRuv8"
+        },
+        "refresh_token": {
+          "type": "string",
+          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MzU3MjIyNDksImV4cCI6MTYzODMxNDI0OX0.XmM4PAppRNz4p6p1JoOpK5D6te85YOrc1kMDEm8Em30"
+        }
+      }
+    },
+    "commonError": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": "string",
+          "example": "User not found"
+        },
+        "code": {
+          "type": "number",
+          "example": 404
+        }
+      }
+    }
+  }
+}
