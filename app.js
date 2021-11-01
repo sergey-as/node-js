@@ -8,6 +8,8 @@
 // require('./lesson-8/app');
 // require('./lesson-9/app');
 // require('./lesson-10/app');
+// require('./lesson-11/app');
+// require('./lesson-12/app');
 
 // require('./homework-1/app');
 // require('./homework-2/app');
