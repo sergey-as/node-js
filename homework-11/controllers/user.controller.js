@@ -1,6 +1,6 @@
 const {emailActions, statusCodes} = require('../configs');
 const {User, O_Auth} = require('../dataBase');
-const {emailService, userService} = require('../service');
+const {emailService, s3Service, userService} = require('../service');
 
 module.exports = {
     getUsers: async (req, res, next) => {
@@ -70,5 +70,25 @@ module.exports = {
         } catch (e) {
             next(e);
         }
+    },
+
+    uploadUserAvatar: async (req, res, next) => {
+        try {
+            const {_id, email, name} = req.user;
+
+            const uploadInfo = await s3Service.uploadImage(req.files.avatar, 'users', _id.toString());
+
+            const updatedUser = await User.findByIdAndUpdate(_id, {avatar: uploadInfo.Location}, {new: true});
+
+            req.user = updatedUser.normalize();
+
+            await emailService.sendMail(email, emailActions.UPLOADED, {name});
+
+            res.json(req.user)
+                .status(statusCodes.CREATED_201);
+        } catch (e) {
+            next(e);
+        }
     }
+
 };

@@ -6,7 +6,11 @@ const modelDefinition = require('./model.definition');
 const passwordService = require('../service/password.service'); //for fixing circular dependence
 
 const userSchema = new Schema({
-    ...modelDefinition.nameEmailPassRole
+    ...modelDefinition.nameEmailPassRole,
+    avatar: {
+        type: String
+    }
+
 }, modelDefinition.schemaOptions);
 
 userSchema.methods = {

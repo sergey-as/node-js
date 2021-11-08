@@ -1,5 +1,6 @@
 const cors = require('cors');
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
@@ -16,7 +17,11 @@ const {swaggerDocument} = require('./docs');
 
 const app = express();
 
-mongoose.connect(config.MONGO_CONNECT_URL);
+mongoose.connect(config.MONGO_CONNECT_URL)
+    .then(() => {
+        // eslint-disable-next-line no-console
+        console.log('Mongo connected successfully');
+    });
 
 app.use(helmet());
 app.use(cors({origin: _configureCors}));
@@ -33,6 +38,7 @@ if (config.NODE_ENV === 'dev') {
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use(fileUpload({}));
 
 app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use('/auth', authRouter);
@@ -67,6 +73,6 @@ function _configureCors(origin, callback) {
     return callback(null, true);
 }
 
-// HW-10:
-// swagger
-// querybuilder
+// HW-11:
+// S3 Bucket
+// Sending messages to users who have not logged in for more than ten days.

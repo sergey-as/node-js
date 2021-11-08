@@ -72,7 +72,7 @@
           {
             "name": "Authorization",
             "in": "header",
-            "description": "Ths is `access_token` from POST /auth endpoint",
+            "description": "This is `access_token` from POST /auth endpoint",
             "default": "",
             "required": true,
             "type": "string"
@@ -104,7 +104,7 @@
           {
             "name": "Authorization",
             "in": "header",
-            "description": "Ths is `refresh_token` from POST /auth endpoint",
+            "description": "This is `refresh_token` from POST /auth endpoint",
             "default": "",
             "required": true,
             "type": "string"
@@ -136,7 +136,7 @@
           {
             "name": "Authorization",
             "in": "header",
-            "description": "Ths is `access_token` from POST /auth endpoint",
+            "description": "This is `access_token` from POST /auth endpoint",
             "default": "",
             "required": true,
             "type": "string"
@@ -144,7 +144,7 @@
           {
             "name": "password",
             "in": "formData",
-            "description": "Ths is `new password` to set",
+            "description": "This is `new password` to set",
             "default": "Asdfqwe1!",
             "required": true,
             "type": "string"
@@ -209,7 +209,7 @@
           {
             "name": "Authorization",
             "in": "header",
-            "description": "Ths is `actionToken__forgot_password` from POST /auth/password/forgot endpoint",
+            "description": "This is `actionToken__forgot_password` from POST /auth/password/forgot endpoint",
             "default": "",
             "required": true,
             "type": "string"
@@ -217,7 +217,7 @@
           {
             "name": "password",
             "in": "formData",
-            "description": "Ths is `new password` to set",
+            "description": "This is `new password` to set",
             "default": "Asdfqwe1!",
             "required": true,
             "type": "string"
@@ -245,7 +245,7 @@
           {
             "name": "Authorization",
             "in": "header",
-            "description": "Ths is `access_token` from POST /auth endpoint",
+            "description": "This is `access_token` from POST /auth endpoint",
             "default": "",
             "required": true,
             "type": "string"
@@ -380,7 +380,7 @@
           {
             "name": "Authorization",
             "in": "header",
-            "description": "Ths is `access_token` from POST /auth endpoint",
+            "description": "This is `access_token` from POST /auth endpoint",
             "default": "",
             "required": true,
             "type": "string"
@@ -420,7 +420,7 @@
           {
             "name": "Authorization",
             "in": "header",
-            "description": "Ths is `access_token` from POST /auth endpoint",
+            "description": "This is `access_token` from POST /auth endpoint",
             "default": "",
             "required": true,
             "type": "string"
@@ -442,7 +442,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Updated user object\"",
+            "description": "Updated user object",
             "schema": {
               "type": "object",
               "$ref": "#/definitions/user"
@@ -467,7 +467,7 @@
           {
             "name": "Authorization",
             "in": "header",
-            "description": "Ths is `access_token` from POST /auth endpoint",
+            "description": "This is `access_token` from POST /auth endpoint",
             "default": "",
             "required": true,
             "type": "string"
@@ -486,6 +486,55 @@
           },
           "400": {
             "description": "Invalid email supplied"
+          }
+        }
+      }
+    },
+    "/users/upload/{email}": {
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Uploaded user's avatar",
+        "description": "This can only be done by the logged in user.",
+        "operationId": "uploadUserAvatar",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "This is `access_token` from POST /auth endpoint",
+            "default": "",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "email",
+            "in": "path",
+            "description": "The `email` that needs to be fetched.",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "avatar",
+            "in": "formData",
+            "description": "image file that need to be uploaded",
+            "required": true,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Updated user object",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/user"
+            }
+          },
+          "400": {
+            "description": "File not found"
+          },
+          "404": {
+            "description": "User not found"
           }
         }
       }
@@ -511,6 +560,10 @@
         "role": {
           "type": "string",
           "example": "admin"
+        },
+        "avatar": {
+          "type": "string",
+          "example": "https://aws-s3bucket.s3.amazonaws.com/users%5C6188557b65e6801988e0757a%5CAkWsRq2L7Hhhji5uJzaQi.jpg"
         }
       }
     },
@@ -533,6 +586,10 @@
         "role": {
           "type": "string",
           "example": "admin"
+        },
+        "avatar": {
+          "type": "string",
+          "example": "https://aws-s3bucket.s3.amazonaws.com/users%5C6188557b65e6801988e0757a%5CAkWsRq2L7Hhhji5uJzaQi.jpg"
         },
         "access_token": {
           "type": "string",

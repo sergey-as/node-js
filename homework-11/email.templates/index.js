@@ -21,6 +21,11 @@ module.exports = {
         subject: 'Your settings was updated.'
     },
 
+    [emailActions.UPLOADED]: {
+        templateName: 'uploaded',
+        subject: 'Your avatar was uploaded.'
+    },
+
     [emailActions.CHANGE_PASSWORD]: {
         templateName: 'changePassword',
         subject: 'Your password was changed.'

@@ -8,7 +8,7 @@ const {
     validatorsName,
 } = require('../configs');
 const {userController} = require('../controllers');
-const {userMiddleware, authMiddleware} = require('../middlewares');
+const {authMiddleware, fileMiddleware, userMiddleware} = require('../middlewares');
 const {userValidator} = require('../validators');
 
 router.get(
@@ -49,6 +49,14 @@ router.delete(
         userRoles.USER
     ]),
     userController.deleteUser
+);
+router.put(
+    '/upload/:email',
+    userMiddleware.isDataValid(userValidator, validatorsName.EMAIL_USER, PARAMS),
+    fileMiddleware.checkUserAvatar,
+    authMiddleware.checkToken(tokenTypes.ACCESS_TOKEN),
+    authMiddleware.checkAccessByEmail,
+    userController.uploadUserAvatar
 );
 
 module.exports = router;
