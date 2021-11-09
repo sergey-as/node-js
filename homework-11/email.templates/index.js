@@ -6,6 +6,11 @@ module.exports = {
         subject: 'Hello! You are authorized!'
     },
 
+    [emailActions.NOT_VISITED]: {
+        templateName: 'notvisited',
+        subject: 'Hello! You have not visited for a long time!'
+    },
+
     [emailActions.REGISTERED]: {
         templateName: 'registered',
         subject: 'Congratulations! You are registered!'

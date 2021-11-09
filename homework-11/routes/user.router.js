@@ -50,6 +50,12 @@ router.delete(
     ]),
     userController.deleteUser
 );
+router.get(
+    '/id/:user_id',
+    userMiddleware.isUserIdValid,
+    userMiddleware.isUserByIdPresent,
+    userController.getUserById
+);
 router.put(
     '/upload/:email',
     userMiddleware.isDataValid(userValidator, validatorsName.EMAIL_USER, PARAMS),

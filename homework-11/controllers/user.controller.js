@@ -14,6 +14,17 @@ module.exports = {
         }
     },
 
+    getUserById: (req, res, next) => {
+        try {
+            const user = req.user;
+
+            req.user = user.normalize();
+            res.json(req.user);
+        } catch (e) {
+            next(e);
+        }
+    },
+
     getUserByEmail: (req, res, next) => {
         try {
             const user = req.user;

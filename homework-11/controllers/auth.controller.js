@@ -11,7 +11,8 @@ const {emailService, jwtService, passwordService} = require('../service');
 module.exports = {
     login: async (req, res, next) => {
         try {
-            const {body: {password}, user} = req;
+            const {body: {password}} = req;
+            let {user} = req;
 
             await user.isPasswordsMatched(password);
 
@@ -21,6 +22,9 @@ module.exports = {
                 ...tokenPair,
                 user_id: user._id
             });
+
+            const justNow = new Date().toISOString();
+            user = await User.findByIdAndUpdate(user._id, {lastActivityAt: justNow}, {new: true});
 
             const userNormalized = user.normalize();
 
@@ -36,7 +40,7 @@ module.exports = {
     refresh: async (req, res, next) => {
         try {
             const token = req.get(AUTHORIZATION);
-            const {user} = req;
+            let {user} = req;
 
             await O_Auth.deleteOne({[tokenTypes.REFRESH_TOKEN]: token});
 
@@ -46,6 +50,9 @@ module.exports = {
                 ...tokenPair,
                 user_id: user._id
             });
+
+            const justNow = new Date().toISOString();
+            user = await User.findByIdAndUpdate(user._id, {lastActivityAt: justNow}, {new: true});
 
             const userNormalized = user.normalize();
 

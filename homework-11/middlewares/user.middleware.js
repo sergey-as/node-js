@@ -1,3 +1,8 @@
+//Variant1
+const ObjectId = require('mongoose').Types.ObjectId;
+//Variant2
+// const {isValidObjectId} = require('mongoose');
+
 const {
     dataIn: {PARAMS},
     messages,
@@ -7,6 +12,25 @@ const {
 const {User} = require('../dataBase');
 
 module.exports = {
+    isUserByIdPresent: async (req, res, next) => {
+        try {
+            const {user_id} = req.params;
+            const userById = await User.findById(user_id);
+
+            if (!userById) {
+                return next({
+                    message: messages.USER_NOT_FOUND,
+                    status: statusCodes.NOT_FOUND_404
+                });
+            }
+
+            req.user = userById;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
     isUserPresent: (body_params = PARAMS, auth = false) => async (req, res, next) => {
         try {
             const {email} = req[body_params];
@@ -57,6 +81,31 @@ module.exports = {
             }
 
             req[validationData] = value;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+
+    isUserIdValid: (req, res, next) => {
+        try {
+            const {user_id} = req.params;
+
+            //Variant1
+            if (!ObjectId.isValid(user_id)) {
+                return next({
+                    message: messages.NOT_VALID_USER_ID,
+                    status: statusCodes.BAD_REQUEST_400
+                });
+            }
+            //Variant2
+            // if (!isValidObjectId(user_id)) {
+            //     return next({
+            //         message: messages.NOT_VALID_USER_ID,
+            //         status: statusCodes.BAD_REQUEST_400
+            //     });
+            // }
+
             next();
         } catch (e) {
             next(e);

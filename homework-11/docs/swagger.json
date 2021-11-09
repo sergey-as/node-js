@@ -490,6 +490,40 @@
         }
       }
     },
+    "/users/id/{user_id}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get user by ID",
+        "description": "",
+        "operationId": "getUserById",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "The `user_id` that needs to be fetched.",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/user"
+            }
+          },
+          "400": {
+            "description": "Not valid user Id"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
     "/users/upload/{email}": {
       "put": {
         "tags": [

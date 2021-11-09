@@ -7,6 +7,9 @@ const passwordService = require('../service/password.service'); //for fixing cir
 
 const userSchema = new Schema({
     ...modelDefinition.nameEmailPassRole,
+    lastActivityAt: {
+        type: Date
+    },
     avatar: {
         type: String
     }
