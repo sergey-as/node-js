@@ -26,5 +26,5 @@ module.exports = {
         .required(),
     roleValidator: Joi
         .string()
-        .valid(...Object.values(userRoles)),
+        .valid(...Object.values(userRoles))
 };
